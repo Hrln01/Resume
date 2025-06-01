@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -307,6 +268,8 @@
       <section id="cover-letter" class="card bg-white p-8 rounded-lg shadow-md fade-in">
         <button id="toggle-cover-letter" class="toggle-btn"><</button>
         <div class="text-gray-700">
+          <p>Harlen Young</p>
+          <p class="mt-4"><span id="current-date"></span></p>
           <p class="mt-4">Dear Hiring Manager,</p>
           <p class="mt-4">
             Today I am here to explain why I would relish this opportunity and why I am the right choice.
@@ -316,7 +279,7 @@
           </p>
           <p class="mt-4"><strong>My Story:</strong></p>
           <p class="mt-4">
-            I was raised very old school, under the roof of a disciplined salesman; in hindsight I am lucky. It was a given that I have ventures spanning over a decade, starting with classic lemonade stands, selling crystals and toys at school, and lolly hustling in high school, then onto e-commerce and B2B wholesale shortly after; I’ve been immersed in this culture for a long time.
+            I was raised by a father with old-school tendencies, and being a disciplined salesman, he taught me more than most. It was a given that I have ventures spanning over a decade, starting with classic lemonade stands, selling crystals and toys at school, and lolly hustling in high school, then onto e-commerce and B2B wholesale shortly after; I’ve been immersed in this culture for a long time.
           </p>
           <p class="mt-4">
             My most noteworthy success was in the nicotine industry. In early 2022, starting with a mere $400, I gradually learned through sheer experience; I began to understand the life cycle of a sale in great detail, and all critical aspects of business that can’t be replicated in a degree, most importantly the art of hustle—from direct-to-consumers and later onto B2B partnerships. Over time, I eventually saw weekly sales of over $50,000, achieving consistent revenue through B2B channels and thousands of independent consumers.
@@ -353,6 +316,14 @@
 
   <!-- JavaScript for Interactivity -->
   <script>
+    // Set the current date in the Cover Letter
+    document.addEventListener('DOMContentLoaded', () => {
+      const dateElement = document.getElementById('current-date');
+      const today = new Date();
+      const options = { month: 'long', day: '2-digit', year: 'numeric' };
+      dateElement.textContent = today.toLocaleDateString('en-US', options);
+    });
+
     // Toggle Cover Letter and Resume Sections
     const coverLetterSection = document.getElementById('cover-letter-section');
     const resumeSection = document.getElementById('resume-section');
