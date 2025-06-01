@@ -1,0 +1,436 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Harlen Young - Resume</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+    }
+    .header {
+      background-color: #1A202C;
+    }
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: #E2E8F0;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    nav {
+      background-color: #1A202C;
+    }
+    .split-container {
+      display: flex;
+      flex-direction: row;
+      min-height: calc(100vh - 200px);
+      position: relative;
+    }
+    .split-section {
+      position: relative;
+      transition: transform 0.5s ease, width 0.5s ease;
+    }
+    @media (max-width: 768px) {
+      .split-container {
+        flex-direction: column;
+      }
+      .split-section {
+        width: 100% !important;
+      }
+    }
+    .toggle-btn {
+      background-color: #D4A017;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10;
+      font-size: 1.25rem;
+      line-height: 1;
+      transition: transform 0.3s ease;
+    }
+    .toggle-btn.active {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Header -->
+  <header class="header text-white py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-2">Harlen Young</h1>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="text-white py-4 sticky top-0 z-50 shadow-md">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center">
+        <ul class="hidden md:flex space-x-4">
+          <li><a href="#cover-letter" class="nav-link hover:text-gray-200 smooth-scroll px-2 py-1">Cover Letter</a></li>
+          <li><a href="#profile" class="nav-link hover:text-gray-200 smooth-scroll px-2 py-1">Profile</a></li>
+          <li><a href="#attributes" class="nav-link hover:text-gray-200 smooth-scroll px-2 py-1">Attributes</a></li>
+          <li><a href="#skills-qualifications" class="nav-link hover:text-gray-200 smooth-scroll px-2 py-1">Skills & Qualifications</a></li>
+          <li><a href="#experience" class="nav-link hover:text-gray-200 smooth-scroll px-2 py-1">Experience</a></li>
+          <li><a href="#referees" class="nav-link hover:text-gray-200 smooth-scroll px-2 py-1">Referees</a></li>
+          <li><a href="#contact" class="nav-link hover:text-gray-200 smooth-scroll px-2 py-1">Contact</a></li>
+        </ul>
+        <button class="md:hidden focus:outline-none" id="menu-toggle">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden bg-navy text-white py-4">
+        <ul class="flex flex-col space-y-2 px-4">
+          <li><a href="#cover-letter" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1">Cover Letter</a></li>
+          <li><a href="#profile" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1">Profile</a></li>
+          <li><a href="#attributes" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1">Attributes</a></li>
+          <li><a href="#skills-qualifications" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1">Skills & Qualifications</a></li>
+          <li><a href="#experience" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1">Experience</a></li>
+          <li><a href="#referees" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1">Referees</a></li>
+          <li><a href="#contact" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Split Layout -->
+  <div class="split-container container mx-auto px-4 py-12">
+    <!-- Resume Section (Left) -->
+    <div id="resume-section" class="split-section w-1/2 md:pr-4">
+      <main>
+        <!-- Profile -->
+        <section id="profile" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+          <button id="toggle-resume" class="toggle-btn">></button>
+          <h2 class="text-3xl font-bold mb-6 text-navy">Profile</h2>
+          <p class="text-gray-700">
+            I am a driven individual with a passion for success, demonstrated through my continuous growth in business acumen and diverse skill set. I thrive in dynamic environments with opportunities for progression, adapting quickly to any role and giving my all to ensure collective success. My commitment to progress aligns every step with my goals and values, making me an ever-evolving asset who prioritizes responsibilities in my career and beyond.
+          </p>
+        </section>
+
+        <!-- Attributes -->
+        <section id="attributes" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+          <h2 class="text-3xl font-bold mb-6 text-navy">Attributes</h2>
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+            <li class="flex items-center"><span class="w-2 h-2 bg-gold rounded-full mr-2"></span>Drive & Discipline</li>
+            <li class="flex items-center"><span class="w-2 h-2 bg-gold rounded-full mr-2"></span>Strategic Thinker</li>
+            <li class="flex items-center"><span class="w-2 h-2 bg-gold rounded-full mr-2"></span>Results-Oriented</li>
+            <li class="flex items-center"><span class="w-2 h-2 bg-gold rounded-full mr-2"></span>Adaptable</li>
+            <li class="flex items-center"><span class="w-2 h-2 bg-gold rounded-full mr-2"></span>Proactive</li>
+            <li class="flex items-center"><span class="w-2 h-2 bg-gold rounded-full mr-2"></span>+</li>
+          </ul>
+        </section>
+
+        <!-- Skills & Qualifications -->
+        <section id="skills-qualifications" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+          <h2 class="text-3xl font-bold mb-6 text-navy">Skills & Qualifications</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="text-xl font-semibold text-navy mb-4">Technical Skills</h3>
+              <ul class="list-disc ml-6 text-gray-700">
+                <li>Web Development</li>
+                <li>AI Programming</li>
+                <li>Arduino</li>
+                <li>Microsoft Office Suite</li>
+                <li>SketchUp: 3D Design Software</li>
+                <li>Autodesk AutoCAD</li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-navy mb-4">Certifications</h3>
+              <ul class="list-disc ml-6 text-gray-700">
+                <li>Certificate II in Technical Graphics</li>
+                <li>Certificate II in Electrotechnology</li>
+                <li>Certificate II in Sport & Recreation (SIS20115)</li>
+                <li>First Aid</li>
+                <li>High Risk Work License (FL)</li>
+                <li>White Card</li>
+                <li>Open Water 20 RAID Certification</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Experience -->
+        <section id="experience" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+          <h2 class="text-3xl font-bold mb-6 text-navy">Experience</h2>
+          <div class="mb-8">
+            <h3 class="text-2xl font-semibold text-navy">WA FMCG Distributor</h3>
+            <p class="text-gray-600">Lippaz NRT Pouches Distribution, Western Australia | 2023 - 2024</p>
+            <ul class="list-disc ml-6 text-gray-700 mt-2">
+              <li>Saw emerging trends and spearheaded the early adoption of nicotine pouches, becoming WA’s largest distributor before regulatory changes. Weekly sales exceeded $25,000 through e-commerce and B2B in 16 regularly stocked stores.</li>
+              <li>Roles included but were not limited to: Website creation and modifying code, finding and managing B2B partnerships, and operational, record, and inventory management processes with Excel. Used data and metrics to determine and drive improvements.</li>
+              <li>Strong regulatory understanding. TGA interactions to ensure product compliance and navigating its application for approval with other key players in this industry. Created an agreement with a large pharma company—should TGA stances shift, we will work together on its application to legalize the product.</li>
+            </ul>
+          </div>
+          <div class="mb-8">
+            <h3 class="text-2xl font-semibold text-navy">WA FMCG Distributor</h3>
+            <p class="text-gray-600">Lippaz ENDS Distribution, Western Australia | Late 2021 - 2023</p>
+            <ul class="list-disc ml-6 text-gray-700 mt-2">
+              <li>Understood modern trends and joined the bustling industry of disposable vapes, establishing a foothold in the market as a key distributor in Western Australia prior to regulatory changes.</li>
+              <li>Beginning with a mere $400 in capital, I eventually saw weekly sales of over $50,000, achieving consistent revenue through B2B channels and thousands of different consumers.</li>
+              <li>Starting with uncertainty, gradually through sheer experience I began to confidently learn all critical aspects of business, most importantly MINDSET, not only marketing to consumers but later onto B2B partnerships; over time I incrementally optimized the operations.</li>
+            </ul>
+          </div>
+          <div class="mb-8">
+            <h3 class="text-2xl font-semibold text-navy">Team Member (Casual/Full-Time)</h3>
+            <p class="text-gray-600">Rammed Earth Alternatives Australia, Western Australia | 2022 - Present</p>
+            <ul class="list-disc ml-6 text-gray-700 mt-2">
+              <li>Collaborated with project managers, subcontractors, and suppliers to oversee and support rammed earth construction projects.</li>
+              <li>Interpreted build plans to ensure construction activities aligned with design specifications and met customer expectations.</li>
+              <li>Managed day-to-day site operations, prioritizing tasks, tracking progress, and handling inventory while identifying risks and proposing solutions.</li>
+              <li>Supervised and trained team members, participated in the building process from pre-start checks to completion, and proposed safety and workflow improvements.</li>
+            </ul>
+          </div>
+          <div class="mb-8">
+            <h3 class="text-2xl font-semibold text-navy">Apprentice</h3>
+            <p class="text-gray-600">Schneider Electrics, Western Australia | 2021 - 2022</p>
+            <ul class="list-disc ml-6 text-gray-700 mt-2">
+              <li>Collaborated closely with knowledgeable colleagues, gaining insights into procedures, professional conduct, and the value of task dedication, applicable across various work environments.</li>
+              <li>Faced minimal expectations as an apprentice, with colleagues indifferent to extra effort beyond the bare minimum, motivating me to proactively prove my capabilities.</li>
+              <li>Initiated self-directed learning by volunteering for jobs, and when none were available, cleaned the warehouse, disassembled circuit breakers, and studied Arduino.</li>
+              <li>Left on good terms to pursue higher earnings in a full-time role while investing in a part-time business venture.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-2xl font-semibold text-navy">Various Roles</h3>
+            <p class="text-gray-600">Hospitality and Sales, Western Australia | 2015 - 2021</p>
+            <p class="text-gray-700 mt-2">
+              With a large emphasis on work ethic and money growing up, it was a given that I would be working as soon as I could—helping to foster my already strong discipline, work ethic and ability to steer rejection, along with abilities such as communication, time management, problem-solving, and adapting to a fast-paced environment. This has provided me with great insight and a strong foundation for the professional work environment.
+            </p>
+          </div>
+        </section>
+
+        <!-- Referees -->
+        <section id="referees" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+          <h2 class="text-3xl font-bold mb-6 text-navy">Referees</h2>
+          <div class="mb-6">
+            <h3 class="text-2xl font-semibold text-navy">Jens Jacobsen</h3>
+            <p class="text-gray-600">Owner Operator, REA Australia</p>
+          </div>
+          <div>
+            <h3 class="text-2xl font-semibold text-navy">Andy Smith</h3>
+            <p class="text-gray-600">Regional Operations Manager, Schneider Electrics</p>
+            <p class="text-gray-700"><strong>Note:</strong> Reference letter available on request.</p>
+          </div>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+          <h2 class="text-3xl font-bold mb-6 text-navy">Contact</h2>
+          <p class="text-gray-700">Available upon request.</p>
+        </section>
+      </main>
+    </div>
+
+    <!-- Cover Letter Section (Right) -->
+    <div id="cover-letter-section" class="split-section w-1/2 md:pl-4">
+      <section id="cover-letter" class="card bg-white p-8 rounded-lg shadow-md fade-in">
+        <button id="toggle-cover-letter" class="toggle-btn"><</button>
+        <div class="text-gray-700">
+          <p>Harlen Young</p>
+          <p class="mt-4">Dear Hiring Manager,</p>
+          <p class="mt-4">
+            Today I am here to explain why I would relish this opportunity and why I am the right choice.
+          </p>
+          <p class="mt-4">
+            I possess all the standard qualities you would seek: strong communication skills, adaptability, professionalism, and intelligence. However, what truly distinguishes me is my unrelenting drive to succeed. I firmly believe, as I trust you do, that the key to any success in sales is an innate hunger—a delusional ambition that outweighs all else, as all other requirements of a role are easily attainable after this.
+          </p>
+          <p class="mt-4"><strong>My Story:</strong></p>
+          <p class="mt-4">
+            I was raised by a father with old-school tendencies, and being a disciplined salesman, he taught me more than most. It was a given that I have ventures spanning over a decade, starting with classic lemonade stands, selling crystals and toys at school, and lolly hustling in high school, then onto e-commerce and B2B wholesale shortly after; I’ve been immersed in this culture for a long time.
+          </p>
+          <p class="mt-4">
+            My most noteworthy success was in the nicotine industry. In early 2022, starting with a mere $400, I gradually learned through sheer experience; I began to understand the life cycle of a sale in great detail, and all critical aspects of business that can’t be replicated in a degree, most importantly the art of hustle—from direct-to-consumers and later onto B2B partnerships. Over time, I eventually saw weekly sales of over $50,000, achieving consistent revenue through B2B channels and thousands of independent consumers.
+          </p>
+          <p class="mt-4">
+            Nearing the ban on vapes, of course, I knew there would be a massive void in the market. There was a period in limbo before I saw the next opportunity. After careful consideration and research on any new regulatory changes, I pivoted. Very quickly, I saw over $25,000 in sales a week, primarily through B2B channels. It wasn’t the same money, but it was the best option at that time; I was simply happy to be there.
+          </p>
+          <p class="mt-4">
+            It was a truly great experience having these distribution businesses; I also gained insight into the inner workings of other businesses I sold to. Everyone’s interconnected; be fair, make them feel special, connect, and with a decent product, it can spread like wildfire within their own network. I became the largest importer and distributor in Western Australia and had people reaching out from NSW and Sydney.
+          </p>
+          <p class="mt-4">
+            I acknowledge the controversy of the nicotine industry but hope we can see this as a reflection of a proactive approach to seizing rare opportunities in an already very limited space for a 20-year-old. I am now committed to channeling extraordinary ambition into a respected profession. I only operated in both businesses while they had the framework that meant it could be sold legally as an NRT product.
+          </p>
+          <p class="mt-4">
+            I may not come from a traditional background, but I do have a fire to win, and I’ve got a history of experience to back it up—this makes me uniquely qualified. I won’t be there to clock in and out; I will be there to push boundaries and drive growth. I can and will adapt quickly, master my responsibilities, and let my work consume my mind.
+          </p>
+          <p class="mt-4">
+            I look forward to hearing from you.
+          </p>
+          <p class="mt-4">
+            Thank you for your time.<br>Best regards,<br>Harlen
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-navy text-white py-8">
+    <div class="container mx-auto px-4 text-center">
+      <p>© 2025 Harlen Young. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript for Interactivity -->
+  <script>
+    // Toggle Cover Letter and Resume Sections
+    const coverLetterSection = document.getElementById('cover-letter-section');
+    const resumeSection = document.getElementById('resume-section');
+    const toggleCoverLetterBtn = document.getElementById('toggle-cover-letter');
+    const toggleResumeBtn = document.getElementById('toggle-resume');
+
+    let state = 'split'; // Possible states: 'split', 'cover-letter-full', 'resume-full'
+
+    toggleCoverLetterBtn.addEventListener('click', () => {
+      if (state === 'split' || state === 'resume-full') {
+        // Expand Cover Letter to full screen
+        coverLetterSection.style.transform = 'translateX(0)';
+        coverLetterSection.classList.remove('w-1/2');
+        coverLetterSection.classList.add('w-full');
+        resumeSection.style.transform = 'translateX(-100%)';
+        toggleCoverLetterBtn.classList.add('active');
+        state = 'cover-letter-full';
+      } else if (state === 'cover-letter-full') {
+        // Return to split view
+        coverLetterSection.style.transform = 'translateX(0)';
+        coverLetterSection.classList.remove('w-full');
+        coverLetterSection.classList.add('w-1/2');
+        resumeSection.style.transform = 'translateX(0)';
+        resumeSection.classList.add('w-1/2');
+        toggleCoverLetterBtn.classList.remove('active');
+        state = 'split';
+      }
+    });
+
+    toggleResumeBtn.addEventListener('click', () => {
+      if (state === 'split' || state === 'cover-letter-full') {
+        // Expand Resume to full screen
+        resumeSection.style.transform = 'translateX(0)';
+        resumeSection.classList.remove('w-1/2');
+        resumeSection.classList.add('w-full');
+        coverLetterSection.style.transform = 'translateX(100%)';
+        toggleResumeBtn.classList.add('active');
+        state = 'resume-full';
+      } else if (state === 'resume-full') {
+        // Return to split view
+        resumeSection.style.transform = 'translateX(0)';
+        resumeSection.classList.remove('w-full');
+        resumeSection.classList.add('w-1/2');
+        coverLetterSection.style.transform = 'translateX(0)';
+        coverLetterSection.classList.add('w-1/2');
+        toggleResumeBtn.classList.remove('active');
+        state = 'split';
+      }
+    });
+
+    // Smooth Scrolling
+    document.querySelectorAll('.smooth-scroll').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Fade-In Animations on Scroll
+    const fadeInElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    fadeInElements.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
