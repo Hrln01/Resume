@@ -6,18 +6,25 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Harlen Young - Resume</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', sans-serif;
       scroll-behavior: smooth;
       overflow-x: hidden;
+      transition: all 0.3s ease;
     }
     h1, h2, h3 {
       font-family: 'Playfair Display', serif;
     }
     .header {
       background-color: #1A202C;
+      position: relative;
+    }
+    .header-content {
+      position: relative;
+      z-index: 1;
     }
     .card {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -91,15 +98,41 @@
     .toggle-btn.active {
       transform: rotate(180deg);
     }
+    .current-prices, .clock-display, .utc-clock-display {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    #scroll-top-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #D4A017;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      border: none;
+      cursor: pointer;
+      display: none;
+      z-index: 1000;
+    }
+    #scroll-top-btn:hover {
+      background-color: #b88c14;
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
   <!-- Header -->
   <header class="header text-white py-12">
-    <div class="container mx-auto px-4 text-center">
+    <div class="header-content container mx-auto px-4 text-center">
       <h1 class="text-4xl md:text-5xl font-bold mb-2">Harlen Young</h1>
+      <p class="current-prices" id="current-prices">Current Price: BTC: Loading...</p>
+      <p class="clock-display" id="clock-display">Current Time in Perth, AU: Loading...</p>
+      <p class="utc-clock-display" id="utc-clock-display">Current Time in UTC: Loading...</p>
     </div>
   </header>
+
+  <!-- Scroll to Top Button (Dynamic) -->
+  <button id="scroll-top-btn">⬆ Top</button>
 
   <!-- Navigation -->
   <nav class="text-white py-4 sticky top-0 z-50 shadow-md">
@@ -268,7 +301,6 @@
       <section id="cover-letter" class="card bg-white p-8 rounded-lg shadow-md fade-in">
         <button id="toggle-cover-letter" class="toggle-btn"><</button>
         <div class="text-gray-700">
-          <p>Harlen Young</p>
           <p class="mt-4"><span id="current-date"></span></p>
           <p class="mt-4">Dear Hiring Manager,</p>
           <p class="mt-4">
@@ -279,7 +311,7 @@
           </p>
           <p class="mt-4"><strong>My Story:</strong></p>
           <p class="mt-4">
-            I was raised by a father with old-school tendencies, and being a disciplined salesman, he taught me more than most. It was a given that I have ventures spanning over a decade, starting with classic lemonade stands, selling crystals and toys at school, and lolly hustling in high school, then onto e-commerce and B2B wholesale shortly after; I’ve been immersed in this culture for a long time.
+            I was raised old school, under the roof of a disciplined salesman; in hindsight I am lucky. It was a given that I have ventures spanning over a decade, starting with classic lemonade stands, selling crystals and toys at school, and lolly hustling in high school, then onto e-commerce and B2B wholesale shortly after; I’ve been immersed in this culture for a long time.
           </p>
           <p class="mt-4">
             My most noteworthy success was in the nicotine industry. In early 2022, starting with a mere $400, I gradually learned through sheer experience; I began to understand the life cycle of a sale in great detail, and all critical aspects of business that can’t be replicated in a degree, most importantly the art of hustle—from direct-to-consumers and later onto B2B partnerships. Over time, I eventually saw weekly sales of over $50,000, achieving consistent revenue through B2B channels and thousands of independent consumers.
@@ -316,6 +348,60 @@
 
   <!-- JavaScript for Interactivity -->
   <script>
+    // Define scrollTopBtn at the start
+    const scrollTopBtn = document.getElementById('scroll-top-btn');
+
+    // Fetch Current Price (BTC only) every 10 seconds
+    document.addEventListener('DOMContentLoaded', () => {
+      const fetchBTCPrice = () => {
+        fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+          .then(response => response.json())
+          .then(data => {
+            const btcPrice = data.bitcoin.usd.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            document.getElementById('current-prices').textContent = `Current Price: BTC: ${btcPrice}`;
+          })
+          .catch(error => {
+            console.error('Error fetching BTC price:', error);
+            console.log('API response failed. Response:', error);
+            document.getElementById('current-prices').textContent = `Current Price: BTC: Unavailable`;
+          });
+      };
+
+      fetchBTCPrice(); // Initial fetch
+      setInterval(fetchBTCPrice, 10000); // Update every 10 seconds
+    });
+
+    // Update Clock in AWST (Perth, UTC+8)
+    function updatePerthClock() {
+      const now = new Date();
+      const awstOffset = 8 * 60; // AWST is UTC+8 (in minutes)
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const awstTime = new Date(utc + (awstOffset * 60000));
+      const hours = awstTime.getHours().toString().padStart(2, '0');
+      const minutes = awstTime.getMinutes().toString().padStart(2, '0');
+      const seconds = awstTime.getSeconds().toString().padStart(2, '0');
+      document.getElementById('clock-display').textContent = `Current Time in Perth, AU: ${hours}:${minutes}:${seconds} AWST`;
+    }
+
+    // Update Clock in UTC
+    function updateUTCClock() {
+      const now = new Date();
+      const utcTime = new Date(now.toUTCString());
+      const hours = utcTime.getUTCHours().toString().padStart(2, '0');
+      const minutes = utcTime.getUTCMinutes().toString().padStart(2, '0');
+      const seconds = utcTime.getUTCSeconds().toString().padStart(2, '0');
+      document.getElementById('utc-clock-display').textContent = `Current Time in UTC: ${hours}:${minutes}:${seconds} UTC`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updatePerthClock();
+      updateUTCClock();
+      setInterval(() => {
+        updatePerthClock();
+        updateUTCClock();
+      }, 1000);
+    });
+
     // Set the current date in the Cover Letter
     document.addEventListener('DOMContentLoaded', () => {
       const dateElement = document.getElementById('current-date');
@@ -330,11 +416,9 @@
     const toggleCoverLetterBtn = document.getElementById('toggle-cover-letter');
     const toggleResumeBtn = document.getElementById('toggle-resume');
 
-    let state = 'split'; // Possible states: 'split', 'cover-letter-full', 'resume-full'
-
+    let state = 'split';
     toggleCoverLetterBtn.addEventListener('click', () => {
       if (state === 'split' || state === 'resume-full') {
-        // Expand Cover Letter to full screen
         coverLetterSection.style.transform = 'translateX(0)';
         coverLetterSection.classList.remove('w-1/2');
         coverLetterSection.classList.add('w-full');
@@ -342,7 +426,6 @@
         toggleCoverLetterBtn.classList.add('active');
         state = 'cover-letter-full';
       } else if (state === 'cover-letter-full') {
-        // Return to split view
         coverLetterSection.style.transform = 'translateX(0)';
         coverLetterSection.classList.remove('w-full');
         coverLetterSection.classList.add('w-1/2');
@@ -355,7 +438,6 @@
 
     toggleResumeBtn.addEventListener('click', () => {
       if (state === 'split' || state === 'cover-letter-full') {
-        // Expand Resume to full screen
         resumeSection.style.transform = 'translateX(0)';
         resumeSection.classList.remove('w-1/2');
         resumeSection.classList.add('w-full');
@@ -363,7 +445,6 @@
         toggleResumeBtn.classList.add('active');
         state = 'resume-full';
       } else if (state === 'resume-full') {
-        // Return to split view
         resumeSection.style.transform = 'translateX(0)';
         resumeSection.classList.remove('w-full');
         resumeSection.classList.add('w-1/2');
@@ -401,6 +482,20 @@
       });
     }, { threshold: 0.1 });
     fadeInElements.forEach(el => observer.observe(el));
+
+    // Scroll to Top Button
+    document.addEventListener('DOMContentLoaded', () => {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 200) {
+          scrollTopBtn.style.display = 'block';
+        } else {
+          scrollTopBtn.style.display = 'none';
+        }
+      });
+      scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
   </script>
 </body>
 </html>
