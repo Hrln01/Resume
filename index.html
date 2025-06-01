@@ -29,9 +29,11 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
     }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    @media (hover: hover) {
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      }
     }
     .nav-link {
       position: relative;
@@ -46,8 +48,13 @@
       background-color: #E2E8F0;
       transition: width 0.3s ease;
     }
-    .nav-link:hover::after {
-      width: 100%;
+    @media (hover: hover) {
+      .nav-link:hover::after {
+        width: 100%;
+      }
+    }
+    .nav-link:active {
+      background-color: rgba(255, 255, 255, 0.1);
     }
     .fade-in {
       opacity: 0;
@@ -71,16 +78,26 @@
       position: relative;
       transition: transform 0.5s ease, width 0.5s ease;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 767px) {
       .split-container {
         flex-direction: column;
       }
       .split-section {
         width: 100% !important;
+        display: none;
+      }
+      .split-section.active {
+        display: block;
       }
       .toggle-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 1rem;
+        padding: 0.6rem 1rem;
+        font-size: 1.25rem;
+        border-radius: 50%;
+      }
+    }
+    @media (min-width: 768px) {
+      .split-section {
+        display: block; /* Ensure visible for tablet/desktop */
       }
     }
     .toggle-btn {
@@ -94,7 +111,7 @@
       top: 1rem;
       right: 1rem;
       z-index: 10;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       line-height: 1;
       transition: transform 0.3s ease;
     }
@@ -103,11 +120,11 @@
     }
     .current-prices {
       margin-top: 1.5rem;
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
     .clock-display {
       margin-top: 0.25rem;
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
     #scroll-top-btn {
       position: fixed;
@@ -115,15 +132,34 @@
       right: 20px;
       background-color: #b88c14;
       color: white;
-      padding: 0.5rem 1rem;
+      padding: 0.75rem 1.25rem;
       border-radius: 0.25rem;
       border: none;
       cursor: pointer;
       display: none;
       z-index: 1000;
+      font-size: 1.25rem;
     }
-    #scroll-top-btn:hover {
+    #scroll-top-btn:hover, #scroll-top-btn:active {
       background-color: #9e7812;
+    }
+    h1 {
+      font-size: 2.5rem;
+    }
+    h2 {
+      font-size: 1.875rem;
+    }
+    p, li {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    #mobile-menu {
+      transition: max-height 0.3s ease-in-out;
+      max-height: 0;
+      overflow: hidden;
+    }
+    #mobile-menu:not(.hidden) {
+      max-height: 500px;
     }
   </style>
 </head>
@@ -154,20 +190,20 @@
           <li><a href="#contact" class="nav-link hover:text-gray-200 smooth-scroll px-2 py-1" aria-label="Go to Contact">Contact</a></li>
         </ul>
         <button class="md:hidden focus:outline-none" id="menu-toggle" aria-label="Toggle mobile menu">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
           </svg>
         </button>
       </div>
       <div id="mobile-menu" class="hidden md:hidden bg-navy text-white py-4">
         <ul class="flex flex-col space-y-2 px-4">
-          <li><a href="#cover-letter" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1" aria-label="Go to Cover Letter">Cover Letter</a></li>
-          <li><a href="#profile" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1" aria-label="Go to Profile">Profile</a></li>
-          <li><a href="#attributes" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1" aria-label="Go to Attributes">Attributes</a></li>
-          <li><a href="#skills-qualifications" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1" aria-label="Go to Skills and Qualifications">Skills & Qualifications</a></li>
-          <li><a href="#experience" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1" aria-label="Go to Experience">Experience</a></li>
-          <li><a href="#referees" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1" aria-label="Go to Referees">Referees</a></li>
-          <li><a href="#contact" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-1" aria-label="Go to Contact">Contact</a></li>
+          <li><a href="#cover-letter" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-2 text-lg" aria-label="Go to Cover Letter">Cover Letter</a></li>
+          <li><a href="#profile" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-2 text-lg" aria-label="Go to Profile">Profile</a></li>
+          <li><a href="#attributes" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-2 text-lg" aria-label="Go to Attributes">Attributes</a></li>
+          <li><a href="#skills-qualifications" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-2 text-lg" aria-label="Go to Skills and Qualifications">Skills & Qualifications</a></li>
+          <li><a href="#experience" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-2 text-lg" aria-label="Go to Experience">Experience</a></li>
+          <li><a href="#referees" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-2 text-lg" aria-label="Go to Referees">Referees</a></li>
+          <li><a href="#contact" class="nav-link hover:text-gray-200 smooth-scroll block px-2 py-2 text-lg" aria-label="Go to Contact">Contact</a></li>
         </ul>
       </div>
     </div>
@@ -176,10 +212,10 @@
   <!-- Split Layout -->
   <div class="split-container container mx-auto px-4 py-12">
     <!-- Resume Section (Left) -->
-    <div id="resume-section" class="split-section w-1/2 md:pr-4">
+    <div id="resume-section" class="split-section w-1/2 md:pr-4 active">
       <main>
         <!-- Profile -->
-        <section id="profile" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+        <section id="profile" class="mb-12 card bg-white p-6 rounded-lg shadow-md fade-in">
           <button id="toggle-resume" class="toggle-btn" aria-label="Expand Resume Section">></button>
           <h2 class="text-3xl font-bold mb-6 text-navy">Profile</h2>
           <p class="text-gray-700">
@@ -188,7 +224,7 @@
         </section>
 
         <!-- Attributes -->
-        <section id="attributes" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+        <section id="attributes" class="mb-12 card bg-white p-6 rounded-lg shadow-md fade-in">
           <h2 class="text-3xl font-bold mb-6 text-navy">Attributes</h2>
           <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
             <li class="flex items-center"><span class="w-2 h-2 bg-gold rounded-full mr-2"></span>Drive & Discipline</li>
@@ -201,7 +237,7 @@
         </section>
 
         <!-- Skills & Qualifications -->
-        <section id="skills-qualifications" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+        <section id="skills-qualifications" class="mb-12 card bg-white p-6 rounded-lg shadow-md fade-in">
           <h2 class="text-3xl font-bold mb-6 text-navy">Skills & Qualifications</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -231,7 +267,7 @@
         </section>
 
         <!-- Experience -->
-        <section id="experience" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+        <section id="experience" class="mb-12 card bg-white p-6 rounded-lg shadow-md fade-in">
           <h2 class="text-3xl font-bold mb-6 text-navy">Experience</h2>
           <div class="mb-8">
             <h3 class="text-2xl font-semibold text-navy">FMCG Distributor</h3>
@@ -287,7 +323,7 @@
         </section>
 
         <!-- Referees -->
-        <section id="referees" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+        <section id="referees" class="mb-12 card bg-white p-6 rounded-lg shadow-md fade-in">
           <h2 class="text-3xl font-bold mb-6 text-navy">Referees</h2>
           <div class="mb-6">
             <h3 class="text-2xl font-semibold text-navy">Jens Jacobsen</h3>
@@ -301,7 +337,7 @@
         </section>
 
         <!-- Contact -->
-        <section id="contact" class="mb-12 card bg-white p-8 rounded-lg shadow-md fade-in">
+        <section id="contact" class="mb-12 card bg-white p-6 rounded-lg shadow-md fade-in">
           <h2 class="text-3xl font-bold mb-6 text-navy">Contact</h2>
           <p class="text-gray-700">Available upon request.</p>
         </section>
@@ -310,7 +346,7 @@
 
     <!-- Cover Letter Section (Right) -->
     <div id="cover-letter-section" class="split-section w-1/2 md:pl-4">
-      <section id="cover-letter" class="card bg-white p-8 rounded-lg shadow-md fade-in">
+      <section id="cover-letter" class="card bg-white p-6 rounded-lg shadow-md fade-in">
         <button id="toggle-cover-letter" class="toggle-btn" aria-label="Expand Cover Letter Section"><</button>
         <div class="text-gray-700">
           <p class="mt-4"><span id="current-date"></span></p>
@@ -415,41 +451,73 @@
     const toggleResumeBtn = document.getElementById('toggle-resume');
 
     let state = 'split';
+
+    // Function to handle mobile swapping
+    function swapSections(showSection, hideSection, activeBtn, inactiveBtn) {
+      showSection.classList.add('active');
+      hideSection.classList.remove('active');
+      activeBtn.classList.add('active');
+      inactiveBtn.classList.remove('active');
+    }
+
+    // Function to handle tablet/desktop sliding
+    function slideToCoverLetter() {
+      coverLetterSection.style.transform = 'translateX(0)';
+      coverLetterSection.classList.remove('w-1/2');
+      coverLetterSection.classList.add('w-full');
+      resumeSection.style.transform = 'translateX(-100%)';
+      toggleCoverLetterBtn.classList.add('active');
+      toggleResumeBtn.classList.remove('active');
+      state = 'cover-letter-full';
+    }
+
+    function slideToResume() {
+      resumeSection.style.transform = 'translateX(0)';
+      resumeSection.classList.remove('w-1/2');
+      resumeSection.classList.add('w-full');
+      coverLetterSection.style.transform = 'translateX(100%)';
+      toggleResumeBtn.classList.add('active');
+      toggleCoverLetterBtn.classList.remove('active');
+      state = 'resume-full';
+    }
+
+    function resetToSplit() {
+      coverLetterSection.style.transform = 'translateX(0)';
+      coverLetterSection.classList.remove('w-full');
+      coverLetterSection.classList.add('w-1/2');
+      resumeSection.style.transform = 'translateX(0)';
+      resumeSection.classList.remove('w-full');
+      resumeSection.classList.add('w-1/2');
+      toggleCoverLetterBtn.classList.remove('active');
+      toggleResumeBtn.classList.remove('active');
+      state = 'split';
+    }
+
     toggleCoverLetterBtn.addEventListener('click', () => {
-      if (state === 'split' || state === 'resume-full') {
-        coverLetterSection.style.transform = 'translateX(0)';
-        coverLetterSection.classList.remove('w-1/2');
-        coverLetterSection.classList.add('w-full');
-        resumeSection.style.transform = 'translateX(-100%)';
-        toggleCoverLetterBtn.classList.add('active');
-        state = 'cover-letter-full';
-      } else if (state === 'cover-letter-full') {
-        coverLetterSection.style.transform = 'translateX(0)';
-        coverLetterSection.classList.remove('w-full');
-        coverLetterSection.classList.add('w-1/2');
-        resumeSection.style.transform = 'translateX(0)';
-        resumeSection.classList.add('w-1/2');
-        toggleCoverLetterBtn.classList.remove('active');
-        state = 'split';
+      if (window.innerWidth < 768) {
+        // Mobile: Swap to cover letter
+        swapSections(coverLetterSection, resumeSection, toggleCoverLetterBtn, toggleResumeBtn);
+      } else {
+        // Tablet/Desktop: Slide to cover letter or reset
+        if (state === 'split' || state === 'resume-full') {
+          slideToCoverLetter();
+        } else if (state === 'cover-letter-full') {
+          resetToSplit();
+        }
       }
     });
 
     toggleResumeBtn.addEventListener('click', () => {
-      if (state === 'split' || state === 'cover-letter-full') {
-        resumeSection.style.transform = 'translateX(0)';
-        resumeSection.classList.remove('w-1/2');
-        resumeSection.classList.add('w-full');
-        coverLetterSection.style.transform = 'translateX(100%)';
-        toggleResumeBtn.classList.add('active');
-        state = 'resume-full';
-      } else if (state === 'resume-full') {
-        resumeSection.style.transform = 'translateX(0)';
-        resumeSection.classList.remove('w-full');
-        resumeSection.classList.add('w-1/2');
-        coverLetterSection.style.transform = 'translateX(0)';
-        coverLetterSection.classList.add('w-1/2');
-        toggleResumeBtn.classList.remove('active');
-        state = 'split';
+      if (window.innerWidth < 768) {
+        // Mobile: Swap to resume
+        swapSections(resumeSection, coverLetterSection, toggleResumeBtn, toggleCoverLetterBtn);
+      } else {
+        // Tablet/Desktop: Slide to resume or reset
+        if (state === 'split' || state === 'cover-letter-full') {
+          slideToResume();
+        } else if (state === 'resume-full') {
+          resetToSplit();
+        }
       }
     });
 
