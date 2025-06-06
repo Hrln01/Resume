@@ -97,7 +97,7 @@
     }
     @media (min-width: 768px) {
       .split-section {
-        display: block; /* Ensure visible for tablet/desktop */
+        display: block;
       }
     }
     .toggle-btn {
@@ -117,6 +117,16 @@
     }
     .toggle-btn.active {
       transform: rotate(180deg);
+    }
+    .toggle-btn.wiggle {
+      animation: wiggle 0.5s ease-in-out 2;
+    }
+    @keyframes wiggle {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
     }
     .current-prices {
       margin-top: 1.5rem;
@@ -216,7 +226,7 @@
       <main>
         <!-- Profile -->
         <section id="profile" class="mb-12 card bg-white p-6 rounded-lg shadow-md fade-in">
-          <button id="toggle-resume" class="toggle-btn" aria-label="Expand Resume Section">></button>
+          <button id="toggle-resume" class="toggle-btn wiggle" aria-label="Expand Resume Section">></button>
           <h2 class="text-3xl font-bold mb-6 text-navy">Profile</h2>
           <p class="text-gray-700">
             I am a driven individual with a passion for success, demonstrated through my continuous growth in business acumen and diverse skill set. I thrive in dynamic environments with opportunities for progression, adapting quickly to any role and giving my all to ensure collective success. My commitment to progress aligns every step with my goals and values, making me an ever-evolving asset who prioritizes responsibilities in my career and beyond.
@@ -225,7 +235,7 @@
 
         <!-- Attributes -->
         <section id="attributes" class="mb-12 card bg-white p-6 rounded-lg shadow-md fade-in">
-          <h2 class="text-3xl font-bold mb-6 text-navy">Attributes</h2>
+          <h maths="text-3xl font-bold mb-6 text-navy">Attributes</h2>
           <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
             <li class="flex items-center"><span class="w-2 h-2 bg-gold rounded-full mr-2"></span>Drive & Discipline</li>
             <li class="flex items-center"><span class="w-2 h-2 bg-gold rounded-full mr-2"></span>Strategic Thinker</li>
@@ -274,7 +284,7 @@
             <p class="text-gray-600">Lippaz NRT Pouches Distribution, Western Australia | 2023 - 2024</p>
             <ul class="list-disc ml-6 text-gray-700 mt-2">
               <li>Saw emerging trends and spearheaded the early adoption of nicotine pouches, becoming WA’s largest distributor before regulatory changes. Weekly sales exceeded $25,000 through e-commerce and B2B in 16 regularly stocked stores.</li>
-              <li>Roles included but were not limited to: Website creation and modifying code, finding and managing B2B partnerships, and operational, record, and inventory management processes with Excel. Used data and metrics to determine and drive improvements.</li>
+              <li>Roles included but were not limited to: Finding new business and managing B2B partnerships. Operational, record, and inventory management processes with Excel. Website build and maintenance. Used data and metrics to determine and drive improvements.</li>
               <li>Strong regulatory understanding. TGA interactions to ensure product compliance and navigating its application for approval with other key players in this industry. Created an agreement with a large pharma company—should TGA stances shift, we will work together on its application to legalize the product.</li>
             </ul>
           </div>
@@ -283,7 +293,7 @@
             <p class="text-gray-600">Lippaz ENDS Distribution, Western Australia | Late 2021 - 2023</p>
             <ul class="list-disc ml-6 text-gray-700 mt-2">
               <li>Understood modern trends and joined the bustling industry of disposable vapes, establishing a foothold in the market as a key distributor in Western Australia prior to regulatory changes.</li>
-              <li>Beginning with a mere $400 in capital, I eventually saw weekly sales of over $50,000, achieving consistent revenue through B2B channels and thousands of different consumers.</li>
+              <li>Beginning with a mere $400 in capital, I eventually touched weekly sales of over $50,000, achieving consistent revenue through B2B channels and thousands of different consumers.</li>
               <li>Starting with uncertainty, gradually through sheer experience I began to confidently learn all critical aspects of business, most importantly MINDSET, not only marketing to consumers but later onto B2B partnerships; over time I incrementally optimized the operations.</li>
             </ul>
           </div>
@@ -328,6 +338,7 @@
           <div class="mb-6">
             <h3 class="text-2xl font-semibold text-navy">Jens Jacobsen</h3>
             <p class="text-gray-600">Owner Operator, REA Australia</p>
+            <p class="text-gray-700"><strong>Note:</strong> Reference letter available on request.</p>
           </div>
           <div>
             <h3 class="text-2xl font-semibold text-navy">Andy Smith</h3>
@@ -339,7 +350,7 @@
         <!-- Contact -->
         <section id="contact" class="mb-12 card bg-white p-6 rounded-lg shadow-md fade-in">
           <h2 class="text-3xl font-bold mb-6 text-navy">Contact</h2>
-          <p class="text-gray-700">Available upon request.</p>
+          <p class تیم-gray-700">Available upon request.</p>
         </section>
       </main>
     </div>
@@ -347,7 +358,7 @@
     <!-- Cover Letter Section (Right) -->
     <div id="cover-letter-section" class="split-section w-1/2 md:pl-4">
       <section id="cover-letter" class="card bg-white p-6 rounded-lg shadow-md fade-in">
-        <button id="toggle-cover-letter" class="toggle-btn" aria-label="Expand Cover Letter Section"><</button>
+        <button id="toggle-cover-letter" class="toggle-btn wiggle" aria-label="Expand Cover Letter Section"><</button>
         <div class="text-gray-700">
           <p class="mt-4"><span id="current-date"></span></p>
           <p class="mt-4">Dear Hiring Manager,</p>
@@ -355,17 +366,17 @@
             Today I am here to explain why I would relish this opportunity and why I am the right choice.
           </p>
           <p class="mt-4">
-            I possess all the standard qualities you would seek: strong communication skills, adaptability, professionalism, and intelligence. However, what truly distinguishes me is my unrelenting drive to succeed. I firmly believe, as I trust you do, that the key to any success in sales is an innate hunger—a delusional ambition that outweighs all else, as all other requirements of a role are easily attainable after this.
+            I possess all the standard qualities you would seek: strong communication skills, adaptability, professionalism, and intelligence. However, what truly distinguishes me is my unrelenting drive to succeed. I firmly believe, as I trust you do, that the key to any success in any role is an innate hunger—a delusional ambition that outweighs all else, as all other requirements of a role are easily attainable after this.
           </p>
           <p class="mt-4"><strong>My Story:</strong></p>
           <p class="mt-4">
-            I was raised very old school, under the roof of a disciplined salesman; in hindsight I am lucky. It was a given that I have ventures spanning over a decade, starting with classic lemonade stands, selling crystals and toys at school, and lolly hustling in high school, then onto e-commerce and B2B wholesale shortly after; I’ve been immersed in this culture for a long time.
+            I was raised very old school, under the roof of a disciplined salesman; the childhood may have been hard but in hindsight I am lucky. It was a given that I have ventures spanning over a decade, starting with classic lemonade stands, selling crystals and toys at school, and lolly hustling in high school, then onto e-commerce and B2B wholesale shortly after; I’ve been immersed in this culture for a long time.
           </p>
           <p class="mt-4">
-            My most noteworthy success was in the Fast-Moving-Consumable-Goods. In early 2022, starting with a mere $400, I gradually learned through sheer experience; the whole life cycle of a sale in great detail, and many critical aspects of business, most importantly the art of hustle—from direct-to-consumers and later onto B2B partnerships. Over time, I eventually touched weekly revenue that saw over $50,000, achieving this through B2B channels and thousands of independent consumers.
+            My most noteworthy success was in the Fast-Moving-Consumable-Goods, more specifically the nicotine industry. In early 2022, starting with a mere $400, I gradually learned through sheer experience; the whole life cycle of a sale in great detail, and many critical aspects of business, most importantly the art of hustle—from direct-to-consumers and later onto B2B partnerships. Over time, I eventually touched weekly revenue that saw over $50,000, achieving this through B2B channels and thousands of independent consumers.
           </p>
           <p class="mt-4">
-            Nearing the regulatory changes on Electronic Nicotine Delivery Systems, of course, I knew there would be a massive void in the market; after careful consideration and research on any new regulatory changes, I pivoted. Very quickly, I saw over $25,000 in sales a week after a period of limbo, primarily through B2B channels. It wasn’t the same money, but it was the best option at that time; I was simply happy to have found an alternative.
+            Nearing the regulatory changes, of course, I knew there would be a massive void in the market; after careful consideration and research on any new regulatory changes, I pivoted. Very quickly, I saw over $25,000 in sales a week after a period of limbo, primarily through B2B channels. It wasn’t the same money, but it was the best option at that time; I was simply happy to have found an alternative.
           </p>
           <p class="mt-4">
             It was a truly great experience having these distribution businesses; I also gained insight into the inner workings of other businesses I sold to. Everyone’s interconnected; be fair, make them feel special, connect, and with a decent product, it can spread like wildfire within their own network. I became the largest importer and distributor in Western Australia and had people reaching out from NSW and Sydney.
@@ -433,7 +444,7 @@
       document.getElementById('clock-display').textContent = `Current Time in Perth, AU: ${hours}:${minutes}:${seconds} AWST`;
     }
 
-    // Initialize clock and date
+    // Initialize clock, date, and wiggle animation
     document.addEventListener('DOMContentLoaded', () => {
       updatePerthClock();
       setInterval(updatePerthClock, 1000);
@@ -442,6 +453,14 @@
       const today = new Date();
       const options = { month: 'long', day: '2-digit', year: 'numeric' };
       dateElement.textContent = today.toLocaleDateString('en-US', options);
+
+      // Remove wiggle class after animation completes
+      const toggleButtons = document.querySelectorAll('.toggle-btn');
+      toggleButtons.forEach(button => {
+        button.addEventListener('animationend', () => {
+          button.classList.remove('wiggle');
+        });
+      });
     });
 
     // Toggle Cover Letter and Resume Sections
